@@ -32,3 +32,4 @@ install/
 JEMalloc/
 .cache
 .vscode
+*.txt
