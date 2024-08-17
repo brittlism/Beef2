@@ -1821,7 +1821,7 @@ void BfAutoComplete::CheckIdentifier(BfAstNode* identifierNode, bool isInExpress
 			"offsetof", "out", "params", "readonly", "ref", "rettype", "return",
 			"sealed", "sizeof", "scope", "static", "strideof", "struct", "switch", /*"this",*/ "try", "true", "typeof", "unchecked",
 			"using", "var", "virtual", "volatile", "where", "while",
-			"alloctype", "comptype", "decltype", "nullable",
+			"alloctype", "comptype", "decltype", "nullable", "any"
 		};
 
 		for (int i = 0; i < sizeof(tokens) / sizeof(char*); i++)
@@ -1841,7 +1841,7 @@ void BfAutoComplete::CheckIdentifier(BfAstNode* identifierNode, bool isInExpress
 			"interface", "in", "implicit", "internal", "mixin", "namespace", "new",
 			"operator", "out", "override", "params", "private", "protected", "public", "readonly", "ref", "rettype", "return",
 			"scope", "sealed", "static", "struct", "this", "typealias",
-			"using", "virtual", "volatile", "T", "where"
+			"using", "virtual", "volatile", "T", "where", "any"
 		};
 		for (int i = 0; i < sizeof(tokens)/sizeof(char*); i++)
 			AddEntry(AutoCompleteEntry("token", tokens[i]), filter);

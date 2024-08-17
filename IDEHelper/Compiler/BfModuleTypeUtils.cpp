@@ -10434,12 +10434,10 @@ BfTypeDef* BfModule::FindTypeDef(BfTypeReference* typeRef, BfTypeInstance* typeI
 		if (findNameStr == "object")
 		{
 			findNameStr = "System.Object";
-			Fail("'object' alias not supported, use 'Object'", typeRef);
 		}
 		else if (findNameStr == "string")
 		{
 			findNameStr = "System.String";
-			Fail("'string' alias not supported, use 'String'", typeRef);
 		}
 	}
 

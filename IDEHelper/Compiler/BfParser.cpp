@@ -3372,6 +3372,10 @@ void BfParser::NextToken(int endIdx, bool outerIsInterpolate, bool disablePrepro
 						if ((!mCompatMode) && (SrcPtrHasToken("yield")))
 							mToken = BfToken_Yield;
 						break;
+					case TOKEN_HASH('a', 'n', 'y', 0):
+						if (SrcPtrHasToken("any"))
+							mToken = BfToken_Any;
+						break;
 					}
 				}
 				if (mToken != BfToken_None)

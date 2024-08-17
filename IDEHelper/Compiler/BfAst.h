@@ -265,6 +265,19 @@ enum BfToken : uint8
 	BfToken_When,
 	BfToken_Where,
 	BfToken_While,
+	BfToken_Any,
+	BfToken_Auto,
+	BfToken_Dynamic,
+	BfToken_With,
+	BfToken_Much,
+	BfToken_Credence,
+	BfToken_Absorbed,
+	BfToken_Condom,
+	BfToken_Ret,
+	BfToken_And,
+	BfToken_Or,
+	BfToken_Not,
+	BfToken_Force,
 	BfToken_Yield,
 	BfToken_AssignEquals,
 	BfToken_CompareEquals,
@@ -382,6 +395,7 @@ class BfUnaryOperatorExpression;
 class BfBinaryOperatorExpression;
 class BfArrayTypeRef;
 class BfPointerTypeRef;
+class BfAnyTypeReference;
 class BfDotTypeReference;
 class BfVarTypeReference;
 class BfVarRefTypeReference;
@@ -2517,6 +2531,14 @@ public:
 		//mTypeDef = NULL;
 	}
 };	BF_AST_DECL(BfDirectStrTypeReference, BfTypeReference);
+
+class BfAnyTypeReference : public BfTypeReference
+{
+public:
+	BF_AST_TYPE(BfAnyTypeReference, BfTypeReference);
+
+	BfTokenNode* mAnyToken;
+};	BF_AST_DECL(BfAnyTypeReference, BfTypeReference);
 
 class BfDotTypeReference : public BfTypeReference
 {

@@ -1498,6 +1498,8 @@ const char* Beefy::BfTokenToString(BfToken token)
 		return "using";
 	case BfToken_Var:
 		return "var";
+	case BfToken_Any:
+		return "any";
 	case BfToken_Virtual:
 		return "virtual";
 	case BfToken_Volatile:
