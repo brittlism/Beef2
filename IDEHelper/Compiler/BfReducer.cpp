@@ -5167,6 +5167,7 @@ BfTypeReference* BfReducer::DoCreateTypeRef(BfAstNode* firstNode, CreateTypeRefF
 		if (tokenNode != NULL)
 		{
 			BfToken token = tokenNode->GetToken();
+
 			if (token == BfToken_Dot)
 			{
 				BfQualifiedTypeReference* qualifiedTypeRef = mAlloc->Alloc<BfQualifiedTypeReference>();
@@ -8208,9 +8209,14 @@ BfObjectCreateExpression* BfReducer::CreateObjectCreateExpression(BfAstNode* all
 	{
 		// Note- if there WERE an LBracket here then we'd have an 'isArray' case. We pass this in here for
 		// error display purposes
-		tokenNode = ExpectTokenAfter(objectCreateExpr, BfToken_LParen, BfToken_LBracket);
-		if (tokenNode == NULL)
+		AssertCurrentNode(objectCreateExpr);
+		auto nextNode = mVisitorPos.GetNext();
+		tokenNode = BfNodeDynCast<BfTokenNode>(nextNode);
+
+		if (tokenNode == NULL || tokenNode->GetToken() != BfToken_LParen && tokenNode->GetToken() != BfToken_LBracket)
 			return objectCreateExpr;
+		else
+			mVisitorPos.MoveNext();
 	}
 
 	MEMBER_SET(objectCreateExpr, mOpenToken, tokenNode);
@@ -10360,6 +10366,7 @@ BfGenericConstraintsDeclaration* BfReducer::CreateGenericConstraintsDeclaration(
 					mVisitorPos.MoveNext();
 
 					auto opToken = BfNodeDynCast<BfTokenNode>(mVisitorPos.GetNext());
+
 					if (opToken == NULL)
 					{
 						auto typeRef = CreateTypeRefAfter(opConstraint, BfReducer::CreateTypeRefFlags_SafeGenericParse);
