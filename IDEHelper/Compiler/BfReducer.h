@@ -158,6 +158,7 @@ public:
 
 public:
 	BfAstNode* Fail(const StringImpl& errorMsg, BfAstNode* refNode);
+	//BfAstNode* FailS(const StringImpl& errorMsg, BfAstNode* refNode);
 	BfAstNode* FailAfter(const StringImpl& errorMsg, BfAstNode* refNode);
 	void AddErrorNode(BfAstNode* astNode, bool removeNode = true);
 

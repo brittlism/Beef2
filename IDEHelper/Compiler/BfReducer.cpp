@@ -6209,6 +6209,16 @@ BfAstNode* BfReducer::ReadTypeMember(BfTokenNode* tokenNode, bool declStarted, i
 		ReplaceNode(tokenNode, operatorDecl);
 		operatorDecl->mOperatorToken = tokenNode;
 
+		/*if (mVisitorPos.GetNext()->GetToken() == BfToken_Implicit)
+		{
+			auto implicitKwTok = BfNodeDynCast<BfTokenNode*>(mVisitorPos.GetNext()); mVisitorPos.MoveNext();
+
+			if (auto keywordAnyToken = BfNodeDynCast<BfTokenNode*>(mVisitorPos.GetNext()))
+			{
+				
+			}
+		}*/
+
 		auto typeRef = CreateTypeRefAfter(operatorDecl);
 		if (typeRef == NULL)
 			return operatorDecl;
@@ -6436,6 +6446,7 @@ BfAstNode* BfReducer::ReadTypeMember(BfTokenNode* tokenNode, bool declStarted, i
 	case BfToken_Inline:
 	case BfToken_Using:
 	case BfToken_Volatile:
+	case BfToken_Operator:
 		break;
 	default:
 		AddErrorNode(tokenNode);
@@ -7150,7 +7161,32 @@ BfAstNode* BfReducer::ReadTypeMember(BfAstNode* node, bool declStarted, int dept
 	}
 	else if (auto nextToken = BfNodeDynCast<BfTokenNode>(nextNode))
 	{
-		if (nextToken->GetToken() == BfToken_Operator)
+		auto tok = nextToken->GetToken();
+
+		if (tok == BfToken_Implicit)
+		{
+			auto operatorKwTok = BfNodeDynCast<BfTokenNode>(mVisitorPos.GetCurrent());
+			auto keywordAnyToken = BfNodeDynCast<BfTokenNode>(mVisitorPos.Get(mVisitorPos.mReadPos + 2));
+			if (operatorKwTok->GetToken() != BfToken_Operator || keywordAnyToken->GetToken() != BfToken_Any)
+				Fail("Expected 'operator implicit any', ", operatorKwTok);
+			mVisitorPos.mReadPos += 2;	// Note to self: format this ^^^
+
+			auto operatorDecl = mAlloc->Alloc<BfOperatorDeclaration>();
+			BfDeferredAstSizedArray<BfParameterDeclaration*> params(operatorDecl->mParams, mAlloc);
+			BfDeferredAstSizedArray<BfTokenNode*> commas(operatorDecl->mCommas, mAlloc);
+			MEMBER_SET(operatorDecl, mOperatorToken, operatorKwTok);
+			MEMBER_SET(operatorDecl, mOpTypeToken, keywordAnyToken);
+
+			operatorDecl->mReturnType = CreateTypeRef(keywordAnyToken);
+
+			operatorDecl->mIsConvOperator = true;
+
+			ParseMethod(operatorDecl, &params, &commas);
+
+			return operatorDecl;
+		}
+
+		if (tok == BfToken_Operator)
 		{
 			auto operatorDecl = mAlloc->Alloc<BfOperatorDeclaration>();
 			BfDeferredAstSizedArray<BfParameterDeclaration*> params(operatorDecl->mParams, mAlloc);
@@ -10397,10 +10433,12 @@ BfGenericConstraintsDeclaration* BfReducer::CreateGenericConstraintsDeclaration(
 						mVisitorPos.MoveNext();
 					}
 
-					auto typeRef = CreateTypeRefAfter(opConstraint);
-					if (typeRef == NULL)
-						break;
-					MEMBER_SET(opConstraint, mRightType, typeRef);
+					if (opToken->GetToken() != BfToken_Any)
+					{
+						auto typeRef = CreateTypeRefAfter(opConstraint);
+						if (typeRef != NULL)
+							MEMBER_SET(opConstraint, mRightType, typeRef);
+					}
 				}
 				break;
 				default: break;
